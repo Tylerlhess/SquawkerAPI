@@ -1,6 +1,5 @@
 from serverside import *
 import logging
-import json
 
 logger = logging.getLogger('squawker_utils')
 logger.setLevel(logging.DEBUG)

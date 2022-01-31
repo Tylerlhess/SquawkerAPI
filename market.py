@@ -1,5 +1,4 @@
 from serverside import *
-from profile import Profile
 import json
 import squawker_errors
 import logging

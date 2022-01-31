@@ -1,8 +1,6 @@
-from flask import Flask, request, redirect, session, url_for, render_template, send_file, abort
+from flask import Flask, request, abort
 from flask.json import jsonify
-from markupsafe import escape
 from utils import *
-import json
 from credentials import SITE_SECRET_KEY
 from squawker_errors import *
 from serverside import *
@@ -12,7 +10,6 @@ from api_message import Message
 from profile import Profile
 from market import Listing
 
-import re
 
 app = Flask(__name__)
 
