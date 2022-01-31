@@ -35,7 +35,10 @@ HEADERS = [
 class Listing:
     def __init__(self, tx):
         # tx is { address, message, block }
-        self.tx = tx
+        if isinstance(tx, dict):
+            self.tx = tx
+        else:
+            self.tx = json.loads(tx)
         try:
             self.raw_message = json.loads(self.get_raw_message())
             self.text = self.get_raw_msg_attr("desc")

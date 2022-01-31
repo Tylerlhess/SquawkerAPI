@@ -2,7 +2,6 @@ from serverside import *
 import logging
 import json
 
-
 logger = logging.getLogger('squawker_utils')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='squawker_utils.log', encoding='utf-8', mode='a')
@@ -10,6 +9,16 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 debug = 0
+
+
+class Kaw:
+    def __init__(self, tx):
+        self.tx = tx
+        self.t = ""
+
+    def report(self):
+        return f"{self.t} {self.__str__()}"
+
 
 def tx_to_self(tx, size=1):
     messages = dict()
@@ -54,11 +63,5 @@ def transaction_scriptPubKey(tx_id, vout):
     return issued_scriptPubKey
 
 
-def parse_ipfs(data):
-    raw_message = ''
-    try:
-        raw_message = json.dumps(json.loads(data))
-        logger.info(f"raw message returned as {raw_message}")
 
-    except:
-        pass
+

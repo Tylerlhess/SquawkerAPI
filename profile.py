@@ -1,7 +1,16 @@
 from utils import tx_to_self
 from serverside import *
 import squawker_errors
-import json
+import json, logging
+
+logger = logging.getLogger('squawker_profile')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='profile.log', encoding='utf-8', mode='a')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
+handler2 = logging.FileHandler(filename='squawker.log', encoding='utf-8', mode='a')
+handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler2)
 
 
 class Profile():
@@ -16,6 +25,7 @@ class Profile():
 
     def validate(self, ipfs_hash):
         try:
+            logger.info(f"raw ipfs is {ipfs.cat(ipfs_hash)}")
             data = json.loads(ipfs.cat(ipfs_hash))
             for key in data:
                 self.__dict__[key] = data[key]
@@ -86,6 +96,12 @@ class Profile():
                 if not callable(atb):
                     html_dict["others"][atb] = self.__dict__[atb]
         return html_dict
+
+    def report(self):
+        return f"profile {self.__str__()}"
+
+    def json(self):
+        return {'ipfs_hash': self.ipfs_hash, 'address': self.address, 'profile_picture': self.profile_picture, 'picture': str(self.picture)}
 
 
 
