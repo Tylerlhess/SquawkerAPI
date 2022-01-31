@@ -7,9 +7,9 @@ A stand alone api that can be deployed and used to grant read access on the squa
 
 
 # parameters
-call = ['messages', 'market', 'profile', 'message', 'listing']
-asset = <any asset name>
-count = <count>
+* call = ['messages', 'market', 'profile', 'message', 'listing']
+* asset = any asset name
+* count = count
 
 
 # posting jsons
