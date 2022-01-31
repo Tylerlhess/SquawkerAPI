@@ -16,6 +16,12 @@ count = <count>
 applicable calls = ['profile', 'message', 'listing']
 required json attributes = ['address', 'message']
 
+# Test script
+json_test_injector.py
+
 
 # Future improvements
 proxy posting endpoint
+
+
+
