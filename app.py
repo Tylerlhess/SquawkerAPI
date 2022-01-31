@@ -54,7 +54,7 @@ def api():
             flags = {
                 "messages": 100000000,
                 "profile":   50000000,
-                "market":    30000000,
+                "market":    20000000,
             }
 
             arguments = {'satoshis': flags[call]}
