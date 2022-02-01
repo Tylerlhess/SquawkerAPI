@@ -19,16 +19,16 @@ class Kaw:
         return f"{self.t} {self.__str__()}"
 
 
-def tx_to_self(tx, size=1):
+def tx_to_self(tx, size=1, rvnrpc=rvn):
     messages = dict()
     messages["addresses"] = [tx["address"]]
     messages["assetName"] = tx["assetName"]
-    deltas = rvn.getaddressdeltas(messages)["result"]
+    deltas = rvnrpc.getaddressdeltas(messages)["result"]
     neg_delta = [(a["satoshis"], a["address"]) for a in deltas if a["txid"] == tx["txid"] and a["satoshis"] < -((size * 100000000)-1)]
     return len(neg_delta)
 
 
-def find_latest_flags(asset=ASSETNAME, satoshis=100000000, count=50, account=None):
+def find_latest_flags(asset=ASSETNAME, satoshis=100000000, count=50, account=None, rvnrpc=rvn):
     latest = []
     logger.info(f"asset is {asset}")
     messages = dict()
@@ -38,12 +38,12 @@ def find_latest_flags(asset=ASSETNAME, satoshis=100000000, count=50, account=Non
         else:
             messages["addresses"] = [account,]
     else:
-        messages["addresses"] = list(rvn.listaddressesbyasset(asset, False)["result"])
+        messages["addresses"] = list(rvnrpc.listaddressesbyasset(asset, False)["result"])
     messages["assetName"] = asset
-    deltas = rvn.getaddressdeltas(messages)["result"]
+    deltas = rvnrpc.getaddressdeltas(messages)["result"]
     for tx in deltas:
         if tx["satoshis"] == satoshis and tx_to_self(tx):
-            transaction = rvn.decoderawtransaction(rvn.getrawtransaction(tx["txid"])["result"])["result"]
+            transaction = rvnrpc.decoderawtransaction(rvnrpc.getrawtransaction(tx["txid"])["result"])["result"]
             for vout in transaction["vout"]:
                 vout = vout["scriptPubKey"]
                 if vout["type"] == "transfer_asset" and vout["asset"]["name"] == asset and vout["asset"]["amount"] == satoshis/100000000:
@@ -56,8 +56,8 @@ def find_latest_flags(asset=ASSETNAME, satoshis=100000000, count=50, account=Non
     return sorted(latest[:count], key=lambda message: message["block"], reverse=True)
 
 
-def transaction_scriptPubKey(tx_id, vout):
-    tx_data = rvn.decoderawtransaction(rvn.gettransaction(tx_id)['result']['hex'])['result']
+def transaction_scriptPubKey(tx_id, vout, rvnrpc=rvn):
+    tx_data = rvnrpc.decoderawtransaction(rvnrpc.gettransaction(tx_id)['result']['hex'])['result']
     issued_scriptPubKey = tx_data['vout'][vout]['scriptPubKey']['hex']
     return issued_scriptPubKey
 
