@@ -62,5 +62,13 @@ def transaction_scriptPubKey(tx_id, vout, rvnrpc=rvn):
     return issued_scriptPubKey
 
 
+def nft_to_address(nft, rvnrpc=rvn):
+    return rvnrpc.listaddressesbyasset(nft)['result']
+
+
+def nft_signed_message(nft, message, signature, rvnrpc=rvn):
+    return rvnrpc.verifymessage(nft_to_address(nft, rvnrpc=rvnrpc), signature, message)['result']
+
+
 
 
