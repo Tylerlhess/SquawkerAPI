@@ -1,11 +1,17 @@
 from serverside import *
 import logging
+from hashlib import sha256
+import json
+
 
 logger = logging.getLogger('squawker_utils')
 logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='squawker_utils.log', encoding='utf-8', mode='a')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
+handler2 = logging.FileHandler(filename='squawker.log', encoding='utf-8', mode='a')
+handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler2)
 
 debug = 0
 
@@ -62,13 +68,13 @@ def transaction_scriptPubKey(tx_id, vout, rvnrpc=rvn):
     return issued_scriptPubKey
 
 
-def nft_to_address(nft, rvnrpc=rvn):
-    return rvnrpc.listaddressesbyasset(nft)['result']
-
-
-def nft_signed_message(nft, message, signature, rvnrpc=rvn):
-    return rvnrpc.verifymessage(nft_to_address(nft, rvnrpc=rvnrpc), signature, message)['result']
-
-
-
-
+def get_logger(logger_name: str, app_name='squawker') -> logging:
+    new_logger = logging.getLogger(logger_name)
+    new_logger.setLevel(logging.DEBUG)
+    new_handler = logging.FileHandler(filename=logger_name+'.log', encoding='utf-8', mode='a')
+    new_handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    new_logger.addHandler(new_handler)
+    new_handler2 = logging.FileHandler(filename=app_name+'.log', encoding='utf-8', mode='a')
+    new_handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    new_logger.addHandler(new_handler2)
+    return new_logger

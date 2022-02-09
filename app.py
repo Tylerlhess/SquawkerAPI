@@ -4,7 +4,7 @@ from utils import *
 from credentials import SITE_SECRET_KEY
 from squawker_errors import *
 from serverside import *
-import logging
+from utils import get_logger
 from account import Account
 from api_message import Message
 from profile import Profile
@@ -17,14 +17,9 @@ app.secret_key = SITE_SECRET_KEY
 
 site_url = 'https://squawker.app'
 
-logger = logging.getLogger('squawkerAPI_app')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='squawkerAPI_app.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-handler2 = logging.FileHandler(filename='squawkerAPI.log', encoding='utf-8', mode='a')
-handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler2)
+
+logger = get_logger('squawkerAPI_app')
+
 
 
 @app.route("/", methods=['GET'])

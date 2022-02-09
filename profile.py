@@ -1,16 +1,10 @@
 from utils import tx_to_self
 from serverside import *
 import squawker_errors
-import json, logging
+import json
+from utils import get_logger
 
-logger = logging.getLogger('squawker_profile')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='profile.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-handler2 = logging.FileHandler(filename='squawker.log', encoding='utf-8', mode='a')
-handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler2)
+logger = get_logger('squawker_profile')
 
 
 class Profile():

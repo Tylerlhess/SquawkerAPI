@@ -1,6 +1,9 @@
 import time
 import json
 from transaction_editor import modify_transaction
+from utils import get_logger
+
+logger = get_logger('account')
 
 
 class Account:
