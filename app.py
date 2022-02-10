@@ -9,6 +9,7 @@ from account import Account
 from api_message import Message
 from profile import Profile
 from market import Listing
+from flask_classful import FlaskView
 
 
 app = Flask(__name__)
