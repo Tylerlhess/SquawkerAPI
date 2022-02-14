@@ -51,5 +51,5 @@ def validate_tag_object(text: str, rvnrpc=rvn) -> bool:
 
 
 def create_tag_object(text: str, rvnrpc=rvn) -> bool:
-
+    pass
 
