@@ -1,9 +1,11 @@
+import logging
+
 from serverside import *
 import json
 from hashlib import sha256
-from ..utils import get_logger
+from utils import get_logger
 
-logger = get_logger('squawker_utils')
+logger = get_logger('squawker_proxyutils')
 
 
 def nft_to_address(nft: str, rvnrpc=rvn) -> str:
@@ -32,9 +34,18 @@ def tag_object_hash(text: str) -> str:
 
 
 def validate_tag_object(text: str, rvnrpc=rvn) -> bool:
-    _text = json.loads(text)
-    tag = json.dumps(_text["tag"])
-    if sha256(tag.encode('utf-8')).hexdigest() == _text["metadata_hash"]["signature_hash"]:
-        return rvnrpc.verifymessage(_text["tag"]["ravencoin_address"], _text["metadata_hash"]["signature_hash"], tag)
-    return False
+    logger.info(f"trying to validate {text}")
+    try:
+        _text = json.loads(text)
+        logger.info(f"_text is {_text}")
+        tag = json.dumps(_text["tag"])
+        if sha256(tag.encode('utf-8')).hexdigest() == _text["metadata_signature"]["signature_hash"]:
+            res = rvnrpc.verifymessage(_text["tag"]["ravencoin_address"], _text["metadata_signature"]["signature_hash"], _text["tag"])
+            logger.info(f"result is {res}")
+            return res
+        logging.info(f"{sha256(tag.encode('utf-8')).hexdigest()} != {_text['metadata_signature']['signature_hash']}")
+        return False
+    except KeyError as e:
+        logger.info(f"Got KeyError {e} off {text}")
+        raise KeyError(e)
 

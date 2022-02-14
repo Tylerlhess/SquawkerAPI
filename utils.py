@@ -2,6 +2,8 @@ from serverside import *
 import logging
 from hashlib import sha256
 import json
+from flask import Flask, request, abort, redirect, url_for, session, flash
+from functools import wraps
 
 
 logger = logging.getLogger('squawker_utils')
@@ -14,15 +16,6 @@ handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(m
 logger.addHandler(handler2)
 
 debug = 0
-
-
-class Kaw:
-    def __init__(self, tx):
-        self.tx = tx
-        self.t = ""
-
-    def report(self):
-        return f"{self.t} {self.__str__()}"
 
 
 def tx_to_self(tx, size=1, rvnrpc=rvn):
@@ -78,3 +71,16 @@ def get_logger(logger_name: str, app_name='squawker') -> logging:
     new_handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     new_logger.addHandler(new_handler2)
     return new_logger
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        if not session["address"]:
+            flash("You need to login", "warning")
+            redirect(url_for('login'))
+
+        return f(*args, **kwargs)
+
+    return decorated_function

@@ -1,26 +1,27 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, redirect, url_for, session, flash
 from flask.json import jsonify
 from utils import *
 from credentials import SITE_SECRET_KEY
 from squawker_errors import *
 from serverside import *
-from utils import get_logger
 from account import Account
 from api_message import Message
 from profile import Profile
 from market import Listing
-from flask_classful import FlaskView
+# from flask_classful import FlaskView
+from functools import wraps
+from proxy_utils import validate_tag_object, tag_object_hash
 
 
 app = Flask(__name__)
 
 app.secret_key = SITE_SECRET_KEY
 
+
 site_url = 'https://squawker.app'
 
 
 logger = get_logger('squawkerAPI_app')
-
 
 
 @app.route("/", methods=['GET'])
@@ -80,6 +81,23 @@ def api():
         raise(e)
 
 
+@app.route('/tag', methods=['POST'])
+def maketag():
+    tag_json = request.json
+    logger.info(f"tag_json cam in as {tag_json}")
+    text_json = json.dumps(tag_json)
+    try:
+        if validate_tag_object(text_json):
+            logger.info(f"{tag_json} is valid. ")
+            return "200"
+        else:
+            return f"Invalid Object: {validate_tag_object(text_json)}"
+    except KeyError:
+        r_json = tag_object_hash(text_json)
+        logger.info(f"tag processed as {r_json}")
+        return r_json
+
+
 def parse_ipfs(data):
     kaw = None
     try:
@@ -101,3 +119,5 @@ def parse_ipfs(data):
         raise e
     logger.info(f"Kaw is {kaw}")
     return kaw
+
+
