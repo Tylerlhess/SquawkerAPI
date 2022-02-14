@@ -81,7 +81,7 @@ def api():
         raise(e)
 
 
-@app.route('/tag', methods=['POST'])
+@app.route('/api/tag', methods=['POST'])
 def maketag():
     tag_json = request.json
     logger.info(f"tag_json cam in as {tag_json}")
@@ -89,7 +89,7 @@ def maketag():
     try:
         if validate_tag_object(text_json):
             logger.info(f"{tag_json} is valid. ")
-            return "200"
+            return "Your submission was valid and would be processed if we were ready to do so. We need to figure out a payment stucture and system as these things burn ravencoin and I ain't got any to spare"
         else:
             return f"Invalid Object: {validate_tag_object(text_json)}"
     except KeyError:

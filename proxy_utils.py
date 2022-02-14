@@ -49,3 +49,7 @@ def validate_tag_object(text: str, rvnrpc=rvn) -> bool:
         logger.info(f"Got KeyError {e} off {text}")
         raise KeyError(e)
 
+
+def create_tag_object(text: str, rvnrpc=rvn) -> bool:
+
+
