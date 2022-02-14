@@ -1,16 +1,9 @@
 from serverside import *
 import json
 import squawker_errors
-import logging
+from utils import get_logger
 
-logger = logging.getLogger('squawker_message')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='squawker_message.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-handler2 = logging.FileHandler(filename='squawker.log', encoding='utf-8', mode='a')
-handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler2)
+logger = get_logger('squawker_message')
 
 
 class Message():

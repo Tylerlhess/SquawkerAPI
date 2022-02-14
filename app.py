@@ -1,30 +1,27 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, redirect, url_for, session, flash
 from flask.json import jsonify
 from utils import *
 from credentials import SITE_SECRET_KEY
 from squawker_errors import *
 from serverside import *
-import logging
 from account import Account
 from api_message import Message
 from profile import Profile
 from market import Listing
+# from flask_classful import FlaskView
+from functools import wraps
+from proxy_utils import validate_tag_object, tag_object_hash
 
 
 app = Flask(__name__)
 
 app.secret_key = SITE_SECRET_KEY
 
+
 site_url = 'https://squawker.app'
 
-logger = logging.getLogger('squawkerAPI_app')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='squawkerAPI_app.log', encoding='utf-8', mode='a')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-handler2 = logging.FileHandler(filename='squawkerAPI.log', encoding='utf-8', mode='a')
-handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler2)
+
+logger = get_logger('squawkerAPI_app')
 
 
 @app.route("/", methods=['GET'])
@@ -84,6 +81,23 @@ def api():
         raise(e)
 
 
+@app.route('/api/tag', methods=['POST'])
+def maketag():
+    tag_json = request.json
+    logger.info(f"tag_json cam in as {tag_json}")
+    text_json = json.dumps(tag_json)
+    try:
+        if validate_tag_object(text_json):
+            logger.info(f"{tag_json} is valid. ")
+            return "Your submission was valid and would be processed if we were ready to do so. We need to figure out a payment stucture and system as these things burn ravencoin and I ain't got any to spare"
+        else:
+            return f"Invalid Object: {validate_tag_object(text_json)}"
+    except KeyError:
+        r_json = tag_object_hash(text_json)
+        logger.info(f"tag processed as {r_json}")
+        return r_json
+
+
 def parse_ipfs(data):
     kaw = None
     try:
@@ -105,3 +119,5 @@ def parse_ipfs(data):
         raise e
     logger.info(f"Kaw is {kaw}")
     return kaw
+
+
