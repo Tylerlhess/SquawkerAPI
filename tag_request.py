@@ -46,11 +46,8 @@ if __name__ == '__main__':
         if key == "":
             key = create_key()
             print("Your keys are in this directory save them in a safe place.")
-        else:
-            print(key)
 
     tagTest = {"tag_type": "AET", "ravencoin_address": address, "pgp_pubkey": key}
-    print(tagTest)
     answer = requests.post("http://squawker.app:8001/api/tag?", json=tagTest).json()
     signature = input(f"Please get signature of '{answer['metadata_signature']['signature_hash']}' using the wallet from resource 3")
     answer["metadata_signature"]["signature"] = signature
