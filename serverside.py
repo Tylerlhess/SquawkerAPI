@@ -3,7 +3,7 @@ import ipfshttpclient
 from credentials import USER, PASSWORD
 
 try:
-    rvn = Ravencoin(USER, PASSWORD, port=18766)
+    rvn = Ravencoin(USER, PASSWORD, port=8766)
     rvn.getblockchaininfo()
 except:
     if not rvn:

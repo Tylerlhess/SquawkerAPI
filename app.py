@@ -10,8 +10,8 @@ from profile import Profile
 from market import Listing
 # from flask_classful import FlaskView
 from functools import wraps
-from proxy_utils import validate_tag_object, tag_object_hash
-
+from proxy_utils import validate_tag_object, tag_object_hash, validate_ipfs_tag
+import tempfile
 
 app = Flask(__name__)
 
@@ -84,12 +84,16 @@ def api():
 @app.route('/api/tag', methods=['POST'])
 def maketag():
     tag_json = request.json
-    logger.info(f"tag_json cam in as {tag_json}")
+    logger.info(f"tag_json came in as {tag_json}")
     text_json = json.dumps(tag_json)
+    logger.info(f"text_json came in as {text_json}")
     try:
-        if validate_tag_object(text_json):
+        if validate_tag_object(text_json) == True:
             logger.info(f"{tag_json} is valid. ")
-            return "Your submission was valid and would be processed if we were ready to do so. We need to figure out a payment stucture and system as these things burn ravencoin and I ain't got any to spare"
+            json_hash = ipfs.add_json(tag_json)
+            ipfs.pin.add(json_hash)
+            logger.info(validate_ipfs_tag(json_hash))
+            return f"Your submission was valid. Please send one SQUAWKER/AET_REDEMPTION_TOKEN to 'RUbMcZS36hvfj223sRpYmchY4PEbibNcCi' with the IPFS message as '{json_hash}'"
         else:
             return f"Invalid Object: {validate_tag_object(text_json)}"
     except KeyError:

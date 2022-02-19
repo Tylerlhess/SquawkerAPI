@@ -132,3 +132,4 @@ dmypy.json
 credentials.py
 .idea/*
 dbconn.py
+*.log

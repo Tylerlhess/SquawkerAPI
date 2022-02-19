@@ -17,6 +17,7 @@ def nft_signed_message(nft: str, message: str, signature: str, rvnrpc=rvn) -> st
 
 
 def tag_object_hash(text: str) -> str:
+    logger.info(f"tag_object_hash")
     try:
         pydict = json.loads(text)
         for key in [
@@ -34,13 +35,14 @@ def tag_object_hash(text: str) -> str:
 
 
 def validate_tag_object(text: str, rvnrpc=rvn) -> bool:
+    text = text.replace('\n', r'\n')
     logger.info(f"trying to validate {text}")
     try:
         _text = json.loads(text)
         logger.info(f"_text is {_text}")
         tag = json.dumps(_text["tag"])
         if sha256(tag.encode('utf-8')).hexdigest() == _text["metadata_signature"]["signature_hash"]:
-            res = rvnrpc.verifymessage(_text["tag"]["ravencoin_address"], _text["metadata_signature"]["signature_hash"], _text["tag"])
+            res = rvnrpc.verifymessage(_text["tag"]["ravencoin_address"], _text["metadata_signature"]["signature"], _text['metadata_signature']['signature_hash'])['result']
             logger.info(f"result is {res}")
             return res
         logging.info(f"{sha256(tag.encode('utf-8')).hexdigest()} != {_text['metadata_signature']['signature_hash']}")
@@ -48,6 +50,15 @@ def validate_tag_object(text: str, rvnrpc=rvn) -> bool:
     except KeyError as e:
         logger.info(f"Got KeyError {e} off {text}")
         raise KeyError(e)
+
+def validate_ipfs_tag(hash: str, rvnrpc=rvn, rvnipfs=ipfs) -> bool:
+    raw_json = ipfs.get_json(hash)
+    ordered_text = '{"tag": {"tag_type": "' + raw_json['tag']['tag_type'] + '", "ravencoin_address": "' + \
+                   raw_json['tag']['ravencoin_address'] + '", "pgp_pubkey": "' + raw_json['tag']['pgp_pubkey'] + \
+                   '"}, "metadata_signature": {"signature_hash": "' + raw_json['metadata_signature']['signature_hash'] +\
+                   '", "signature": "' + raw_json['metadata_signature']['signature'] + '"} }'
+    logger.info(f"validate_ipfs_tag")
+    return validate_tag_object(ordered_text)
 
 
 def create_tag_object(text: str, rvnrpc=rvn) -> bool:
