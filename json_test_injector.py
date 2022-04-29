@@ -51,4 +51,4 @@ if __name__ == '__main__':
     print(sig2.json())
     answer["metadata_signature"]["signature"] = sig2.json()["result"]
     print(answer)
-    print(requests.post("http://squawker.app:8001/api/tag?", json=answer))
+    print(requests.post("http://squawker.app:8001/api/tag?", json=answer).text)

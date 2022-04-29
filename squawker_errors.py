@@ -40,3 +40,15 @@ class NotListing(LoggedBaseException):
 
 class TransactionError(LoggedBaseException):
     pass
+
+
+class InsufficientFunds(LoggedBaseException):
+    pass
+
+
+class NoFunds(LoggedBaseException):
+    pass
+
+
+class Funds(LoggedBaseException):
+    pass

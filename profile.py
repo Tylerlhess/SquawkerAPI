@@ -43,12 +43,22 @@ class Profile():
                 transaction = rvn.decoderawtransaction(rvn.getrawtransaction(tx["txid"])["result"])["result"]
                 for vout in transaction["vout"]:
                     vout = vout["scriptPubKey"]
-                    if vout["type"] == "transfer_asset" and vout["asset"]["name"] == ASSETNAME and vout["asset"][
-                        "amount"] == 0.5:
+                    if vout["type"] == "transfer_asset" and vout["asset"]["name"] == ASSETNAME and vout["asset"]["amount"] == 0.5:
                         kaw = {"address": vout["addresses"], "message": vout["asset"]["message"],
-                               "block": transaction["locktime"]}
+                           "block": transaction["locktime"]}
                         latest.append(kaw)
-        return sorted(latest[:1], key=lambda message: message["block"], reverse=True)[0]
+            if tx["satoshis"] == 10500000 and tx_to_self(tx, 0.105):
+                transaction = rvn.decoderawtransaction(rvn.getrawtransaction(tx["txid"])["result"])["result"]
+                for vout in transaction["vout"]:
+                    vout = vout["scriptPubKey"]
+                    if vout["type"] == "transfer_asset" and vout["asset"]["name"] == ASSETNAME and vout["asset"]["amount"] == 0.105:
+                        kaw = {"address": vout["addresses"], "message": vout["asset"]["message"],
+                           "block": transaction["locktime"]}
+                        latest.append(kaw)
+        try:
+            return sorted(latest[:1], key=lambda message: message["block"], reverse=True)[0]
+        except:
+            return {"message": "QmTxh98Jboa7RJPt6EiuWGUdyDzMM94FdAb2PHDxAq5A1y"}
 
     def basic_xml(self):
         return f"""
@@ -95,7 +105,6 @@ class Profile():
         return f"profile {self.__str__()}"
 
     def json(self):
-        return {'ipfs_hash': self.ipfs_hash, 'address': self.address, 'profile_picture': self.profile_picture, 'picture': str(self.picture)}
-
-
+       return {'ipfs_hash': self.ipfs_hash, 'address': self.address, 'profile_picture': self.profile_picture, 'picture': str(self.picture)}
+       
 

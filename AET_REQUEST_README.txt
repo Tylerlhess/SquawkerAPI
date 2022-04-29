@@ -1,3 +1,15 @@
+To have an AET tag generated for you, you will need the following
+1. One SQUAWKER/AET_REDEMPTION_TOKEN
+2. PGP_key public and private - Optional if you don't provide one, one will be made for you and left in the folder this is run from.
+3. Wallet that can sign transactions for the address you want the AET sent to.
+4. A specific address that you will use going forward to receive encrypted content and NFTs at.
+
+This address will also be the one used by Squawker to show your identity and keep all your communications at. There is no limit to the number of Squawker users you create but to gain reputation and followers it is best to limit the account counts.
+
+Step 1. Acquire your supply list.
+Step 2. obtain a copy of the following python script (requires having the requests lib) You can copy from here and paste into a text file saved as script_name.py
+
+------------------------------------------------------------------------------------------------------------------------
 import requests, re, pgpy
 from pgpy.constants import PubKeyAlgorithm, KeyFlags, HashAlgorithm, SymmetricKeyAlgorithm, CompressionAlgorithm
 from pgpy import PGPKey, PGPUID
@@ -53,3 +65,23 @@ if __name__ == '__main__':
     answer["metadata_signature"]["signature"] = signature
     print("\r\nThe json being used to create the IPFS hash is \r\n{}\r\n".format(answer))
     print(requests.post("http://squawker.app:8001/api/tag?", json=answer).text)
+
+--------------------------------------------------------------------------------------------------------------
+Step 3. Run the script using the address and PGP publickey.
+Step 4. Sign the message that you are given during the script with your wallet.
+Step 5. At the end of the script execution you will see a statement like
+"Your submission was valid. Please send 1 SQUAWKER/AET_REDEMPTION_TOKEN to 'RUbMcZS36hvfj223sRpYmchY4PEbibNcCi' with the Memo as 'QmfNELEAypbwoVZfM9bJoBDNp4ovGeActfgeTeUeJX52N1'"
+The Memo will be used in step 10
+
+Step 6. Open your wallet and go to Transfer Asset.
+Step 7. Select "SQUAWKER/AET_REDEMPTION_TOKEN" as the asset to transfer.
+Step 8. For Pay to enter 'RUbMcZS36hvfj223sRpYmchY4PEbibNcCi'
+Step 9. For Amount enter 1
+Step 10. For Memo enter the memo from step 3
+******IMPORTANT*****
+Failure to attach the correct memo will cause the verification on the tag to FAIL or the tag to be generated for the WRONG ADDRESS if the memo is for a different address than the one intended.
+**********************
+Step 11. Click Send
+Step 12. Wait for your tag to be generated to your address. This will take at least 30 blocks or more.
+
+If you have questions or concerns please email tyler@badguyty.com
